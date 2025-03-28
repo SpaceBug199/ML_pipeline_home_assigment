@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 from enum import Enum
 
 class EmploymentType(str, Enum):
@@ -31,4 +32,27 @@ class Applicant(BaseModel):
     completed_filing: bool
     
     
-    
+class ModelStatus(str, Enum):
+    TRAINING = "training"
+    DEPLOYED = "deployed"
+    FAILES = "failed"
+    INACTIVE = "inactive"
+    PENDING = "pending"    
+        
+class Status(BaseModel):
+    time: datetime
+    model_status: ModelStatus
+
+class Statistics(BaseModel):
+    accuracy: float
+    precision: float
+    recall: float
+    f1_score: float
+        
+class MLModel(BaseModel):
+    model_ID: str
+    model_name: str
+    model_filename: str
+    statistics: Statistics
+    creation_time: datetime
+    status: Status
