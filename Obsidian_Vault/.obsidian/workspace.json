@@ -6,56 +6,43 @@
       {
         "id": "2e596ed1fd594093",
         "type": "tabs",
-        "dimension": 29.083094555873924,
+        "dimension": 47.56446991404012,
         "children": [
           {
             "id": "1aa830fc30dc305c",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "ML pipeline.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false,
-                    false
-                  ]
-                }
+                "file": "Database deployment.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-trello",
-              "title": "ML pipeline"
+              "icon": "lucide-file",
+              "title": "Database deployment"
             }
           },
           {
             "id": "974838e579bba704",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "ML pipeline.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false,
-                    false
-                  ]
-                }
+                "file": "Design - System API.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-trello",
-              "title": "ML pipeline"
+              "icon": "lucide-file",
+              "title": "Design - System API"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       },
       {
         "id": "8cedbce8970ad9f6",
         "type": "tabs",
-        "dimension": 70.91690544412607,
+        "dimension": 52.43553008595988,
         "children": [
           {
             "id": "104818c8e4e61322",
@@ -128,8 +115,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "4a9ef110782537de",
@@ -222,10 +208,10 @@
   },
   "active": "104818c8e4e61322",
   "lastOpenFiles": [
-    "ML pipeline.md",
-    "Data Models.md",
     "Design - System API.md",
+    "Data Models.md",
     "Database deployment.md",
+    "ML pipeline.md",
     "Welcome.md",
     "Untitled.canvas"
   ]
