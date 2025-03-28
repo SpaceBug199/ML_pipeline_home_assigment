@@ -8,23 +8,25 @@ kanban-plugin: board
 
 - [ ] Publigh the git repository
 - [ ] [[Database deployment]]
-- [ ] Training API
-- [ ] Inference API
-- [ ] Training Script
+- [ ] implement Training Script
 - [ ] Inference Script
 - [ ] Training Docker Image
 - [ ] Inference Docker Image
 - [ ] Docker Compose
-- [ ] Deployment Documentation
+- [ ] Write Deployment Documentation
 - [ ] Optional - App smith interface app
 
 
 ## Todo
 
+- [ ] Implement Inference API
+- [ ] Implement Training API
 
 
 ## Doing
 
+- [ ] [[Design - System API]]
+- [ ] [[Data Models]]
 
 
 ## Done
