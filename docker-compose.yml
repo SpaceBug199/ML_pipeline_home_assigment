@@ -2,12 +2,12 @@ version: '3.8'
 services:
   training:
     build:
-      context: ./training  # Point to the FastAPI project directory
+      context: ./app  # Point to the FastAPI project directory
       dockerfile: Dockerfile
     volumes:
-      - ./training:/app  # Mount the FastAPI project directory
+      - ./app:/app  # Mount the FastAPI project directory
     ports:
       - "8000:8000"
     environment:
       - ENV=development
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - WATCHFILES_FORCE_POLLING=true 

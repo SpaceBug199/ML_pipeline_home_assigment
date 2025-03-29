@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
 from enum import Enum
+from typing import List, Optional
+import uuid
 
 class EmploymentType(str, Enum):
     FULL = "full_time"
@@ -56,3 +58,34 @@ class MLModel(BaseModel):
     statistics: Statistics
     creation_time: datetime
     status: Status
+    
+# Additional models for the API
+class Scenario(BaseModel):
+    scenario_ID: str
+    scenario_name: str
+    description: str
+    
+class ScenarioDetail(BaseModel):
+    scenario_ID: str
+    scenario_name: str
+    description: str
+    current_model: Optional[MLModel] = None
+
+class PredictionRequest(BaseModel):
+    applicant: Applicant
+
+class PredictionResponse(BaseModel):
+    prediction_ID: str
+    result: bool
+    confidence: float
+    timestamp: datetime
+
+class TrainingResponse(BaseModel):
+    training_ID: str
+    status: str
+    timestamp: datetime
+    
+class ModelActivationResponse(BaseModel):
+    status: str
+    timestamp: datetime
+    activated_model_ID: str
