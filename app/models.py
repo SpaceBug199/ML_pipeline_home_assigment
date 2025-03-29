@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
-import uuid
+from typing import  Optional
+
 
 class EmploymentType(str, Enum):
     FULL = "full_time"
