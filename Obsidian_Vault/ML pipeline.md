@@ -15,6 +15,10 @@ kanban-plugin: board
 - [ ] Docker Compose
 - [ ] Write Deployment Documentation
 - [ ] Optional - App smith interface app
+- [ ] Database table creation
+- [ ] Database test connection
+- [ ] DB get scenario data
+- [ ] DB get model data
 
 
 ## Todo
@@ -25,12 +29,13 @@ kanban-plugin: board
 
 ## Doing
 
-- [ ] [[Design - System API]]
-- [ ] [[Data Models]]
+- [ ] [[Database CRUD]] - python interface
 
 
 ## Done
 
+- [ ] [[Design - System API]]
+- [ ] [[Data Models]]
 
 
 

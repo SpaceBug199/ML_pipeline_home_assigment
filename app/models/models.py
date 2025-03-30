@@ -20,7 +20,7 @@ class DeviceType(str, Enum):
     TABLET = "tablet"
 
 class Applicant(BaseModel):
-    user_ID: str
+    user_id: str
     age: int
     income: float
     employment_type: EmploymentType
@@ -52,7 +52,7 @@ class Statistics(BaseModel):
     f1_score: float
         
 class MLModel(BaseModel):
-    model_ID: str
+    model_id: str
     model_name: str
     model_filename: str
     statistics: Statistics
@@ -61,15 +61,17 @@ class MLModel(BaseModel):
     
 # Additional models for the API
 class Scenario(BaseModel):
-    scenario_ID: str
+    scenario_id: str
     scenario_name: str
     description: str
+    current_model_id: Optional[MLModel] = None
+    
     
 class ScenarioDetail(BaseModel):
-    scenario_ID: str
+    scenario_id: str
     scenario_name: str
     description: str
-    current_model: Optional[MLModel] = None
+    current_model_id: Optional[MLModel] = None
 
 class PredictionRequest(BaseModel):
     applicant: Applicant
