@@ -1,16 +1,18 @@
 import uuid
 from typing import List
 from datetime import datetime
+import pickle
 
 from fastapi import APIRouter, HTTPException, Depends, status, UploadFile, File
 from supabase import Client
 
-from models.models import Scenario
+from models.models import Scenario, ModelStatus
 from database.database import get_db
 from database.crud import get_scenarios
 
 router = APIRouter()
 STORAGE_BUCKET = "training-data"
+MODELS_BUCKET = "models"
 
 @router.get("/")
 def read_root():
@@ -34,7 +36,7 @@ async def get_scenarios_list( supabase: Client = Depends(get_db)):
     return scenarios_data
 
 
-@router.post("/v1/scenarios/{scenario_ID}/train/training_data")
+@router.post("/v1/scenarios/{scenario_id}/train/training_data")
 async def upload_training_data_file(
     file: UploadFile = File(...), 
     supabase: Client = Depends(get_db)):
@@ -66,3 +68,59 @@ async def upload_training_data_file(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/v1/scenarios/{scenario_id}/models/model")  
+async def upload_model(
+    model_name: str = "Form completion prediction",
+    model_precision: float = 0.5,
+    accuracy: float = 0.5,
+    recall: float = 0.5,
+    f1_score: float = 0.5,
+    model_version: float = 1.0,
+    # model_training_data: UUID = "data-001",
+    file: UploadFile = File(...), 
+    supabase: Client = Depends(get_db)):
+    try:
+        if not file.filename.endswith(".pkl"):
+            raise HTTPException(status_code=400, detail="Only pickle models are currently supported.")
+        file_uuid = str(uuid.uuid4())
+        content = await file.read()
+        file_path = f"{file_uuid}/{file.filename}"
+        storage_response = supabase.storage\
+                .from_(MODELS_BUCKET)\
+                .upload(file_path, content)
+        if not storage_response:
+            raise HTTPException(status_code=500, detail="Failed to upload file to storage.")
+
+        file_url = f"/storage/v1/object/public/{MODELS_BUCKET}/{file_path}"
+        current_time = datetime.now().isoformat()
+        
+        data = {
+            "model_id": file_uuid,
+            "model_url": file_url,
+            "model_name": model_name,
+            "model_filename":file.filename,
+            "accuracy": accuracy,
+            "model_precision": model_precision,
+            "recall": recall,
+            "f1_score": f1_score,
+            "created_at":current_time,
+            "modified_at":current_time,
+            "model_state": ModelStatus.INACTIVE,
+            "model_training_data_id": file_uuid,
+            "model_version":model_version,
+            "trained_at": current_time
+        }
+
+        db_response = supabase.table("ml_models").insert(data).execute()
+        if not db_response:
+            raise HTTPException(status_code=500, detail="Failed to insert file metadata into database.")
+        return {"message": "File uploaded successfully", "file_id": file_uuid, "file_url": file_url}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    
+@router.post("/v1/scenarios/{scenario_id}/models/{model_id}/activate")
+async def set_active_model():
+    pass
