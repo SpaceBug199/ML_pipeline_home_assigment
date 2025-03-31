@@ -47,10 +47,26 @@ async def update_active_model(scenario_id: str, model_id: str, db: Client) -> bo
     """ Set active model for a selected scenario
         Reutrn true if model set sucessfully
         Return false if model or scenario don't exist or other errors occur
+        Args:
+            scenario_id (str): Scenario ID
+            model_id (str): Model ID
+            db (Client): Supabase client    
+        Returns:
+            bool: True if model set successfully, False otherwise
     """
-    scenario_id = "NOT IMPLEMENTED"
-    model_id = "NOT IMPLEMENTED"
-    logger.error (f"setting active model: {model_id} NOT IMPLEMENTED for Scenario: {scenario_id}")
-    pass
-
-
+    logger.info(f"Setting active model: {model_id} for Scenario: {scenario_id}")
+    logger.info(f"Setting all other models to inactive")
+    response = db.table("scenario_models").update({"is_active": False}).eq("scenario_id", scenario_id).execute()
+    logger.info(f"response is {response}")
+    if "error" in response:
+        logger.error(f"Error setting all models to inactive: {response.error}")
+        return False
+    logger.info(f"Setting model {model_id} to active")
+    response = db.table("scenario_models").update({"is_active": True}).eq("scenario_id", scenario_id).eq("model_id", model_id).execute()
+    logger.info(f"response is {response}")
+    if "error" in response:
+        logger.error(f"Error setting model {model_id} to active: {response.error}")
+        return False
+    logger.info(f"Model {model_id} set to active successfully")
+    
+    return True
