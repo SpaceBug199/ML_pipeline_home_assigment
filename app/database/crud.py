@@ -29,7 +29,7 @@ async def get_scenarios(db: Client) -> list[Scenario]:
     return scenarios.data
 
 
-async def get_scenario_models(scenario_id: str, db: Client) -> list[MLModel]:
+async def get_models(scenario_id: str, db: Client) -> list[MLModel]:
     """Get all models for a given scenario
     Args:
         scenario_id (str): Scenario ID
@@ -39,7 +39,7 @@ async def get_scenario_models(scenario_id: str, db: Client) -> list[MLModel]:
     """
     logger.info(f"Getting model list for scenario_id:{scenario_id} ")
     models = (
-        db.tabel("scenarios_models")
+        db.table("scenario_models")
         .select("*")
         .eq("scenario_id", scenario_id)
         .execute()
@@ -68,7 +68,7 @@ async def get_scenario_data(scenario_id: str, db: Client) -> Scenario:
     return scenario_data.data[0]
 
 
-async def upload_new_model(file: BinaryIO, file_name: str, model_name: str, model_id: str, model_version: float, model_performance: ModelStatistics, db: Client) -> str:
+async def upload_new_model(file: BinaryIO, file_name: str, model_name: str, model_id: str, model_version: float, model_performance: ModelStatistics, scenario_id: str, db: Client) -> str:
     """Upload a new model to the storage and insert metadata into the database
     Args:
         model (MLModel): Model metadata
@@ -89,6 +89,7 @@ async def upload_new_model(file: BinaryIO, file_name: str, model_name: str, mode
         logger.info(f"Model performance data decoded successfully {performance}")
     except json.JSONDecodeError as e:
         return {"error": f"Error decoding model performance data: {str(e)}"}
+    
     logger.info(f"unpacked data type {type(performance)}, performance = {performance}")
     logger.info(f"dict keys = {performance.keys()}")
     data = {
@@ -121,6 +122,13 @@ async def upload_new_model(file: BinaryIO, file_name: str, model_name: str, mode
             f"Error inserting model {model_id} metadata into the database"
         )
         return False 
+    db_response = db.table(TableName.SCENARIO_MODELS).insert({"scenario_id": scenario_id, "model_id": model_id, "is_active": False}).execute()
+    if not db_response:
+        logger.error(
+            f"Error inserting model {model_id} metadata into the scenario_models table"
+        )
+        return False
+
     return file_url
 
 
@@ -160,7 +168,7 @@ async def update_active_model(scenario_id: str, model_id: str, db: Client) -> bo
     logger.info(f"Setting active model: {model_id} for Scenario: {scenario_id}")
     logger.info(f"Setting all other models to inactive")
     response = (
-        db.table("scenario_models")
+        db.table(TableName.SCENARIO_MODELS)
         .update({"is_active": False})
         .eq("scenario_id", scenario_id)
         .execute()
@@ -173,7 +181,7 @@ async def update_active_model(scenario_id: str, model_id: str, db: Client) -> bo
     
     logger.info(f"Setting model {model_id} to active")
     response = (
-        db.table("scenario_models")
+        db.table(TableName.SCENARIO_MODELS)
         .update({"is_active": True})
         .eq("scenario_id", scenario_id)
         .eq("model_id", model_id)

@@ -6,22 +6,22 @@ kanban-plugin: board
 
 ## TODO
 
-- [ ] Read - specific scenario metadata
-- [ ] Create - scenario model (training_data_ID)
-- [ ] Create - scenario model (model)
-- [ ] Delete model
 - [ ] Delete training_data
+- [ ] Delete model
 
 
 ## Doing
 
-- [ ] Read - specific scenario available models
-- [ ] [[Update - scenario active model]]
 
 
 ## Done
 
+- [ ] Read - specific scenario available models
 - [ ] [[Read - all scenarios id and description]]
+- [ ] Create - scenario model (model)
+- [ ] [[Update - scenario active model]]
+- [ ] Create - scenario model (training_data_ID)
+- [ ] Read - specific scenario metadata
 - [ ] Create - scenario training_data
 
 

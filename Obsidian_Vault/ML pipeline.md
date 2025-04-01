@@ -6,34 +6,34 @@ kanban-plugin: board
 
 ## Backlog
 
-- [ ] Publigh the git repository
-- [ ] [[Database deployment]]
-- [ ] implement Training Script
-- [ ] Inference Script
-- [ ] Training Docker Image
-- [ ] Inference Docker Image
-- [ ] Docker Compose
-- [ ] Write Deployment Documentation
-- [ ] Optional - App smith interface app
-- [ ] Database table creation
-- [ ] Database test connection
-- [ ] DB get scenario data
-- [ ] DB get model data
 
 
 ## Todo
 
-- [ ] Implement Inference API
 - [ ] Implement Training API
+- [ ] implement Training Script
 
 
 ## Doing
 
-- [ ] [[Database CRUD]] - python interface
 
 
 ## Done
 
+- [ ] [[Database CRUD]] - python interface
+- [ ] Optional - App smith interface app
+- [ ] Write Deployment Documentation
+- [ ] Database test connection
+- [ ] Database table creation
+- [ ] DB get scenario data
+- [ ] DB get model data
+- [ ] Docker Compose
+- [ ] Training Docker Image
+- [ ] Inference Docker Image
+- [ ] Inference Script
+- [ ] [[Database deployment]]
+- [ ] Publigh the git repository
+- [ ] Implement Inference API
 - [ ] [[Design - System API]]
 - [ ] [[Data Models]]
 

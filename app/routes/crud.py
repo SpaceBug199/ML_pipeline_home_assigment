@@ -11,7 +11,7 @@ from supabase import Client
 
 from models.models import Scenario, ModelStatus, ModelStatistics
 from database.database import get_db
-from database.crud import get_scenarios, update_active_model, get_scenario_data, upload_new_model
+from database.crud import get_scenarios, update_active_model, get_models, upload_new_model
 from utility.logging_setup import setup_logging
 from database.table_names import TableName
 
@@ -165,6 +165,31 @@ async def upload_model(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/v1/scenarios/{scenario_id}/models")
+async def get_scenario_models(scenario_id: str, supabase: Client = Depends(get_db)):
+    """Get models for a selected scenario from the database and return as JSON response
+    Args:
+        scenario_id (str): Scenario ID
+        supabase (Client): Supabase client
+    Returns:
+        List[dict]: List of models for the selected scenario
+    Raises:
+        HTTPException: 500 If there is an error with the database connection
+        HTTPException: 404 If the scenario does not exist
+    """
+    try:
+        scenario_data = await get_models(scenario_id, supabase)
+        if not scenario_data:
+            raise HTTPException(status_code=404, detail="Scenario not found")
+        scenario_models = supabase.table("scenario_models").select("*").eq("scenario_id", scenario_id).execute()
+        if not scenario_models.data or len(scenario_models.data) == 0:
+            raise HTTPException(status_code=404, detail="No models found for the assigned scenario")
+        return scenario_models.data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @router.post("/v1/scenarios/{scenario_id}/models/{model_id}/activate")
