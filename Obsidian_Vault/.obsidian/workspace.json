@@ -34,6 +34,20 @@
                 }
               },
               {
+                "id": "193a132bb0666407",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "Design - System API.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Design - System API"
+                }
+              },
+              {
                 "id": "974838e579bba704",
                 "type": "leaf",
                 "state": {
@@ -47,7 +61,8 @@
                   "title": "Design - System API"
                 }
               }
-            ]
+            ],
+            "currentTab": 1
           },
           {
             "id": "56e22da274a55048",
@@ -96,7 +111,8 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
+                "sortOrder": "alphabetical",
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -133,8 +149,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "4a9ef110782537de",
@@ -225,14 +240,15 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "1aa830fc30dc305c",
+  "active": "193a132bb0666407",
   "lastOpenFiles": [
-    "Database deployment.md",
+    "ML pipeline.md",
     "Design - System API.md",
+    "Database deployment.md",
+    "Data Models.md",
+    "Update - scenario active model.md",
     "Database CRUD.md",
     "Read - all scenarios id and description.md",
-    "ML pipeline.md",
-    "Data Models.md",
     "Welcome.md",
     "Untitled.canvas"
   ]

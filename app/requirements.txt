@@ -3,3 +3,8 @@ uvicorn
 supabase
 dotenv
 python-multipart
+scikit-learn
+seaborn
+matplotlib
+numpy
+pandas

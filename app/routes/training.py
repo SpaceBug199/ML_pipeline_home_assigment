@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Path, Depends, status
 from supabase import Client
 from dotenv import load_dotenv
 
-from models.models import Scenario, MLModel, ModelStatus, Statistics, Status, PredictionRequest, PredictionResponse, TrainingResponse, ScenarioDetail, ModelActivationResponse, Applicant
+from models.models import Scenario, MLModel, ModelStatus, ModelStatistics, Status, PredictionRequest, PredictionResponse, TrainingResponse, ScenarioDetail, ModelActivationResponse, Applicant
 from database.database import get_db
 
 router = APIRouter()

@@ -1,0 +1,2 @@
+- update scenario_model database
+- load the model from the S3 storage before the switch

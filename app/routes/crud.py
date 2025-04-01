@@ -3,17 +3,19 @@ from typing import List
 from datetime import datetime
 import pickle
 import logging
+from typing import io, BinaryIO, Any, Optional
+import io
 
-from fastapi import APIRouter, HTTPException, Depends, status, UploadFile, File
+from fastapi import APIRouter, HTTPException, Depends, status, UploadFile, File, Body, Form
 from supabase import Client
 
-from models.models import Scenario, ModelStatus
+from models.models import Scenario, ModelStatus, ModelStatistics
 from database.database import get_db
-from database.crud import get_scenarios, update_active_model, get_scenario_data
+from database.crud import get_scenarios, update_active_model, get_scenario_data, upload_new_model
 from utility.logging_setup import setup_logging
+from database.table_names import TableName
 
-STORAGE_BUCKET = "training-data"
-MODELS_BUCKET = "models"
+
 
 router = APIRouter()
 setup_logging()
@@ -75,7 +77,7 @@ async def upload_training_data_file(
         file_uuid = str(uuid.uuid4())
         content = await file.read()
         file_path = f"{file_uuid}/{file.filename}"
-        storage_response = supabase.storage.from_(STORAGE_BUCKET).upload(
+        storage_response = supabase.storage.from_(TableName.TRAINING_DATA_BUCKET).upload(
             file_path, content
         )
         if not storage_response:
@@ -83,7 +85,7 @@ async def upload_training_data_file(
                 status_code=500, detail="Failed to upload file to storage."
             )
 
-        file_url = f"/storage/v1/object/public/{STORAGE_BUCKET}/{file_path}"
+        file_url = f"/storage/v1/object/public/{TableName.TRAINING_DATA_BUCKET}/{file_path}"
         data = {
             "model_training_data_id": file_uuid,
             "model_training_data_url": file_url,
@@ -106,19 +108,15 @@ async def upload_training_data_file(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @router.post("/v1/scenarios/{scenario_id}/models/model")
 async def upload_model(
-    model_name: str = "Form completion prediction",
-    model_precision: float = 0.5,
-    accuracy: float = 0.5,
-    recall: float = 0.5,
-    f1_score: float = 0.5,
-    model_version: float = 1.0,
-    # model_training_data: UUID = "data-001",
+    model_name: str = Form(...),
     file: UploadFile = File(...),
     supabase: Client = Depends(get_db),
+    model_performance: str = Form(...),   
+    model_version: Optional[float] = Form(None), 
 ):
+
     """Upload model file to the storage and insert metadata into the database
     Args:
         model_name (str): Model name
@@ -136,51 +134,33 @@ async def upload_model(
         HTTPException: 400 If the file is not in pickle file format
         HTTPException: 500 If the file upload fails
     """
+    logger.info(f" model parameters are {model_performance}")
     try:
         if not file.filename.endswith(".pkl"):
             raise HTTPException(
-                status_code=400, detail="Only pickle models are currently supported."
+                status_code = 400, detail="Only pickle models are currently supported."
             )
-        file_uuid = str(uuid.uuid4())
-        content = await file.read()
-        file_path = f"{file_uuid}/{file.filename}"
-        storage_response = supabase.storage.from_(MODELS_BUCKET).upload(
-            file_path, content
-        )
-        if not storage_response:
+        model_id = str(uuid.uuid4()) # assign a unique UUID to the model
+        model_content = await file.read()
+        model_file = io.BytesIO(model_content)
+
+        upload_result = await upload_new_model(
+                file = model_file,
+                file_name = file.filename,
+                model_name = model_name,
+                model_id = model_id,
+                model_version = model_version,
+                model_performance = model_performance,
+                db = supabase)
+        if not upload_result:
             raise HTTPException(
-                status_code=500, detail="Failed to upload file to storage."
+                status_code = 500, detail="Failed to upload model to storage."
             )
 
-        file_url = f"/storage/v1/object/public/{MODELS_BUCKET}/{file_path}"
-        current_time = datetime.now().isoformat()
-
-        data = {
-            "model_id": file_uuid,
-            "model_url": file_url,
-            "model_name": model_name,
-            "model_filename": file.filename,
-            "accuracy": accuracy,
-            "model_precision": model_precision,
-            "recall": recall,
-            "f1_score": f1_score,
-            "created_at": current_time,
-            "modified_at": current_time,
-            "model_state": ModelStatus.INACTIVE,
-            "model_training_data_id": file_uuid,
-            "model_version": model_version,
-            "trained_at": current_time,
-        }
-
-        db_response = supabase.table("ml_models").insert(data).execute()
-        if not db_response:
-            raise HTTPException(
-                status_code=500, detail="Failed to insert file metadata into database."
-            )
         return {
             "message": "File uploaded successfully",
-            "file_id": file_uuid,
-            "file_url": file_url,
+            "model_id": model_id,
+            "model_url": upload_result,
         }
 
     except Exception as e:
@@ -207,4 +187,3 @@ async def set_active_model(scenario_id: str, model_id: str, supabase: Client = D
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    pass
